@@ -40,22 +40,22 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun stopPlayService() {
-        mediaPlayer?.stop()
-     /* try {
+        //mediaPlayer?.stop()
+     try {
        stopService(serviceIntent)
      }catch (e:SecurityException){
         Toast.makeText(this,"Error"+e.message,Toast.LENGTH_SHORT).show()
-       }*/
+       }
     }
 
     private fun playAudio() {
-        mediaPlayer= MediaPlayer.create(this, Uri.parse("https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3"))
-        mediaPlayer?.start()
-         /*try {
+        /*mediaPlayer= MediaPlayer.create(this, Uri.parse("https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3"))
+        mediaPlayer?.start()*/
+      try {
              startService(serviceIntent)
          }catch (e:SecurityException){
              Toast.makeText(this,"Error"+e.message,Toast.LENGTH_SHORT).show()
-         }*/
+         }
 
     }
 }

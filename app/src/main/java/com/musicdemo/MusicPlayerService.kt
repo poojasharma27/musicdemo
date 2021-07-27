@@ -11,10 +11,10 @@ import android.widget.Toast
 import java.io.InputStream
 
 
-class MusicPlayerService : Service(), MediaPlayer.OnCompletionListener,
+class MusicPlayerService : Service()/*, MediaPlayer.OnCompletionListener,
     MediaPlayer.OnPreparedListener, MediaPlayer.OnErrorListener,
     MediaPlayer.OnSeekCompleteListener, MediaPlayer.OnInfoListener,
-    MediaPlayer.OnBufferingUpdateListener {
+    MediaPlayer.OnBufferingUpdateListener*/ {
 
     private lateinit var mediaPlayer: MediaPlayer
     var link :String?= null
@@ -22,20 +22,21 @@ class MusicPlayerService : Service(), MediaPlayer.OnCompletionListener,
     override fun onCreate() {
         super.onCreate()
 
-        mediaPlayer=MediaPlayer.create(this, Uri.parse("https://vodafoneapp.s3.ap-south-1.amazonaws.com/gurushala/pages/0.6249899713356712Q2%20P6-%20Art%20Integrated%20Learning.mp3"));
-        mediaPlayer.setOnCompletionListener(this)
+        mediaPlayer=MediaPlayer()
+       /* mediaPlayer.setOnCompletionListener(this)
         mediaPlayer.setOnPreparedListener(this)
         mediaPlayer.setOnErrorListener(this)
         mediaPlayer.setOnSeekCompleteListener(this)
         mediaPlayer.setOnInfoListener(this)
-        mediaPlayer.setOnBufferingUpdateListener(this)
+        mediaPlayer.setOnBufferingUpdateListener(this)*/
     }
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         link= intent?.getStringExtra("AudioLink")
-        mediaPlayer.reset()
+      //  mediaPlayer.reset()
+
         if (!mediaPlayer.isPlaying){
             try {
-              //  mediaPlayer.setDataSource()
+               mediaPlayer.setDataSource(link)
                //     mediaPlayer.setDataSource("https://vodafoneapp.s3.ap-south-1.amazonaws.com/gurushala/pages/0.6249899713356712Q2%20P6-%20Art%20Integrated%20Learning.mp3")
                 mediaPlayer.prepareAsync()
                 mediaPlayer.start()
@@ -62,7 +63,7 @@ class MusicPlayerService : Service(), MediaPlayer.OnCompletionListener,
         }
     }
 
-    override fun onCompletion(mp: MediaPlayer?) {
+    /*override fun onCompletion(mp: MediaPlayer?) {
         if (mp?.isPlaying == true){
             mp.stop()
 
@@ -103,5 +104,5 @@ class MusicPlayerService : Service(), MediaPlayer.OnCompletionListener,
     }
 
     override fun onBufferingUpdate(mp: MediaPlayer?, percent: Int) {
-    }
+    }*/
 }
