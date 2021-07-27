@@ -1,7 +1,7 @@
 package com.musicdemo
 
-import android.R
 import android.app.Service
+import android.content.ContentValues.TAG
 import android.content.Intent
 import android.content.res.AssetFileDescriptor
 import android.media.MediaPlayer
@@ -22,7 +22,11 @@ class MusicPlayerService : Service(), MediaPlayer.OnCompletionListener,
     override fun onCreate() {
         super.onCreate()
 
-        mediaPlayer=MediaPlayer.create(this, Uri.parse("https://vodafoneapp.s3.ap-south-1.amazonaws.com/gurushala/pages/0.6249899713356712Q2%20P6-%20Art%20Integrated%20Learning.mp3"));
+       //val file  = resources.openRawResourceFd(R.raw.sound)
+        val TAG  = "MusicPlayerService"
+
+       // mediaPlayer=MediaPlayer.create(this, Uri.parse("https://vodafoneapp.s3.ap-south-1.amazonaws.com/gurushala/pages/0.6249899713356712Q2%20P6-%20Art%20Integrated%20Learning.mp3"));
+        mediaPlayer = MediaPlayer()
         mediaPlayer.setOnCompletionListener(this)
         mediaPlayer.setOnPreparedListener(this)
         mediaPlayer.setOnErrorListener(this)
@@ -32,17 +36,16 @@ class MusicPlayerService : Service(), MediaPlayer.OnCompletionListener,
     }
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         link= intent?.getStringExtra("AudioLink")
-        mediaPlayer.reset()
+        //mediaPlayer.reset()
         if (!mediaPlayer.isPlaying){
             try {
-              //  mediaPlayer.setDataSource()
-               //     mediaPlayer.setDataSource("https://vodafoneapp.s3.ap-south-1.amazonaws.com/gurushala/pages/0.6249899713356712Q2%20P6-%20Art%20Integrated%20Learning.mp3")
-                mediaPlayer.prepareAsync()
+              mediaPlayer.setDataSource("https://vodafoneapp.s3.ap-south-1.amazonaws.com/gurushala/pages/0.6249899713356712Q2%20P6-%20Art%20Integrated%20Learning.mp3")
+                  //mediaPlayer.setDataSource("https://vodafoneapp.s3.ap-south-1.amazonaws.com/gurushala/pages/0.6249899713356712Q2%20P6-%20Art%20Integrated%20Learning.mp3")
+                mediaPlayer.prepare()
                 mediaPlayer.start()
             }catch (e:Exception){
-                Toast.makeText(this,"Error",Toast.LENGTH_SHORT).show()
-
-
+                Toast.makeText(this," $TAG  : ${e.localizedMessage}",Toast.LENGTH_SHORT).show()
+                e.printStackTrace()
             }
         }
         return START_STICKY
