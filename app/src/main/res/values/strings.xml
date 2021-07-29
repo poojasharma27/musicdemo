@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">MusicDemo</string>
+    <string name="hellotune">Hellotune</string>
+    <string name="music_demo">Music Demo</string>
 </resources>

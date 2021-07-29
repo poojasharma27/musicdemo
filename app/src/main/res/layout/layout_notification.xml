@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <ImageView
+        android:id="@+id/musicImageView"
+        android:layout_width="50dp"
+        android:layout_height="40dp"
+        android:layout_marginStart="@dimen/margin20"
+        android:layout_marginTop="@dimen/margin20"
+        android:layout_marginEnd="@dimen/margin20"
+        android:background="@drawable/music"
+        android:scaleType="fitXY"
+        />
+    <TextView
+        android:id="@+id/musicTitleTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/margin20"
+        android:layout_marginTop="@dimen/margin20"
+        android:layout_marginEnd="@dimen/margin20"
+        android:text="@string/hellotune"
+        android:textStyle="bold"
+        android:layout_toEndOf="@id/musicImageView"
+      android:textSize="@dimen/size16"  />
+
+    <ImageView
+        android:id="@+id/cancelImageView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/margin20"
+        android:layout_marginTop="@dimen/margin20"
+        android:layout_marginEnd="@dimen/margin20"
+        android:background="@drawable/ic_baseline_close_24"
+        android:layout_alignParentEnd="true"
+        android:scaleType="fitXY"
+        />
+    <ImageView
+        android:id="@+id/playStopImageView"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:background="@drawable/ic_baseline_play_circle_outline_24"
+        android:layout_marginStart="@dimen/margin20"
+        android:layout_marginTop="@dimen/margin8"
+        android:layout_below="@id/musicTitleTextView"
+        android:layout_toEndOf="@id/musicImageView"
+        />
+
+</RelativeLayout>
