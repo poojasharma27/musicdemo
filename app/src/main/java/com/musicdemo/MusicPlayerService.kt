@@ -103,7 +103,7 @@ class MusicPlayerService : Service(), MediaPlayer.OnCompletionListener,
      */
     private fun showNotification() {
         val images: Bitmap = BitmapFactory.decodeResource(resources, R.drawable.music)
-        val notificationIntent = Intent(this, MainActivity::class.java)
+        val notificationIntent = Intent(this, MusicActivity::class.java)
         val pausePendingIntent = PendingIntent.getBroadcast(this, 1, Intent(this, PauseAction::class.java).setAction("notification_paused"), PendingIntent.FLAG_UPDATE_CURRENT)
         val playPendingIntent = PendingIntent.getBroadcast(this, 2, Intent(this, PLayAction::class.java).setAction("notification_paused"), PendingIntent.FLAG_UPDATE_CURRENT)
         val notification = NotificationCompat.Builder(this, "CHANNEL_ID")

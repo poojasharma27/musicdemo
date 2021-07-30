@@ -5,9 +5,33 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#341125"
-    tools:context=".MainActivity">
+    tools:context=".MusicActivity">
 
     <ImageView
+        android:id="@+id/addImageView"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:background="@drawable/ic_baseline_add_circle_outline_24"
+        android:scaleType="fitXY"
+        android:layout_margin="@dimen/margin16"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/musicImageView"
+        android:layout_width="300dp"
+        android:layout_height="300dp"
+        android:layout_marginStart="@dimen/margin48"
+        android:layout_marginTop="@dimen/margin48"
+        android:layout_marginEnd="@dimen/margin48"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:lottie_autoPlay="true"
+        app:lottie_loop="true"
+        android:elevation="5dp"
+        app:lottie_rawRes="@raw/music" />
+   <!-- <ImageView
         android:id="@+id/musicImageView"
         android:layout_width="300dp"
         android:layout_height="300dp"
@@ -18,12 +42,12 @@
         android:scaleType="fitXY"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent" />-->
 
     <SeekBar
         android:id="@+id/musicSeekBar"
         android:layout_width="300dp"
-        android:layout_height="wrap_content"
+        android:layout_height="10dp"
         android:layout_marginStart="@dimen/margin20"
         android:layout_marginTop="@dimen/margin32"
         android:layout_marginBottom="@dimen/margin20"

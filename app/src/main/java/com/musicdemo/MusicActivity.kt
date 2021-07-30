@@ -10,11 +10,12 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.IBinder
 import android.util.Log
+import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.musicdemo.databinding.ActivityMainBinding
 
-class MainActivity : AppCompatActivity(), MusicStoppedListener {
+class MusicActivity : AppCompatActivity(), MusicStoppedListener,View.OnClickListener {
 
     private var binding: ActivityMainBinding? = null
     val audioLink = "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3"
@@ -32,6 +33,8 @@ class MainActivity : AppCompatActivity(), MusicStoppedListener {
         binding?.playStopImageView?.setBackgroundResource(R.drawable.ic_baseline_play_circle_outline_24)
         serviceIntent = Intent(this, MusicPlayerService::class.java)
         MyApplication.mContext = this
+        binding?.musicImageView?.animate()?.translationY(0f)?.setDuration(2000)?.setStartDelay(2900)
+        binding?.addImageView?.setOnClickListener(this)
         binding?.musicSeekBar?.isEnabled = false
         binding?.pause?.isEnabled = false
 
@@ -45,7 +48,7 @@ class MainActivity : AppCompatActivity(), MusicStoppedListener {
 
             }
         }
-   binding?.pause?.setOnClickListener {
+        binding?.pause?.setOnClickListener {
        binding?.pause?.isEnabled = false
        binding?.play?.isEnabled = true
        stopPlayService()
@@ -101,6 +104,8 @@ class MainActivity : AppCompatActivity(), MusicStoppedListener {
         bindService(serviceIntent, connection, Context.BIND_AUTO_CREATE)
 
         }
+
+
    /**
     * checking that is my service is running or not
     */
@@ -119,6 +124,8 @@ class MainActivity : AppCompatActivity(), MusicStoppedListener {
         return false
     }
 
+
+
     /**
      * Service Connection for bound service
      */
@@ -132,6 +139,8 @@ class MainActivity : AppCompatActivity(), MusicStoppedListener {
             mBound = false
         }
     }
+
+
     /**
      * onStop and free the connect
      */
@@ -141,6 +150,8 @@ class MainActivity : AppCompatActivity(), MusicStoppedListener {
         mBound = false
     }
 
+
+
     /**
      * musicStop then automatic complete
      */
@@ -149,6 +160,8 @@ class MainActivity : AppCompatActivity(), MusicStoppedListener {
         binding?.pause?.isEnabled=false
         musicPlaying = false
     }
+
+
 
     /**
      * seekbar implementation and updating according to service behaviour
@@ -160,7 +173,7 @@ class MainActivity : AppCompatActivity(), MusicStoppedListener {
             override fun run() {
                 try {
                     binding?.musicSeekBar?.progress = MusicPlayerService.mediaPlayer.currentPosition
-                    handler.postDelayed(this, 1000)
+                    handler.postDelayed(this, 0)
                 } catch (e: Exception) {
                     binding?.musicSeekBar?.progress = 0
                     Log.d("TAG", "Seekbar Error")
@@ -169,6 +182,11 @@ class MainActivity : AppCompatActivity(), MusicStoppedListener {
             }
 
         }, 0)
+    }
+
+    override fun onClick(v: View?) {
+        val intent = Intent(this,ContactActivity::class.java)
+        startActivity(intent)
     }
 
 

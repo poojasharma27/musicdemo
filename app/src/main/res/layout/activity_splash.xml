@@ -17,7 +17,6 @@
         app:layout_constraintTop_toTopOf="parent"
         app:lottie_autoPlay="true"
         app:lottie_loop="true"
-        android:elevation="5dp"
         app:lottie_rawRes="@raw/music" />
 
     <TextView

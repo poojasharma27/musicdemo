@@ -4,7 +4,6 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
-import android.view.View
 import com.musicdemo.databinding.ActivitySplashBinding
 
 class SplashActivity : AppCompatActivity() {
@@ -26,14 +25,7 @@ class SplashActivity : AppCompatActivity() {
 
     private fun onClickView() {
         val handler = Handler()
-        handler.postDelayed(object : Runnable {
-            override fun run() {
-
-                startActivity(Intent(this@SplashActivity,MainActivity::class.java))
-
-            }
-
-        }, 8000)
+        handler.postDelayed({ startActivity(Intent(this@SplashActivity,MusicActivity::class.java)) }, 8000)
     }
 }
 
