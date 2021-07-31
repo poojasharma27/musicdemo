@@ -17,11 +17,11 @@ import androidx.core.app.NotificationManagerCompat
 
 
 class MusicPlayerService : Service(), MediaPlayer.OnCompletionListener,
-    MediaPlayer.OnPreparedListener, MediaPlayer.OnErrorListener {
+    MediaPlayer.OnPreparedListener, MediaPlayer.OnErrorListener,MusicPlayerCallBacks {
 
-    companion object {
+
          lateinit var mediaPlayer: MediaPlayer
-    }
+
 
     private var link: String? = null
    private lateinit var musicStoppedListener: MusicStoppedListener
@@ -55,8 +55,7 @@ class MusicPlayerService : Service(), MediaPlayer.OnCompletionListener,
             if (!mediaPlayer.isPlaying) {
                 try {
                     mediaPlayer.setDataSource("https://file-examples-com.github.io/uploads/2017/11/file_example_MP3_700KB.mp3")
-                    mediaPlayer.prepare()
-                    mediaPlayer.start()
+                    mediaPlayer.prepareAsync()
                     isMusic = true
                 } catch (e: Exception) {
                     Toast.makeText(this, " $TAG  : ${e.localizedMessage}", Toast.LENGTH_SHORT)
@@ -166,9 +165,12 @@ class MusicPlayerService : Service(), MediaPlayer.OnCompletionListener,
     }
 
     override fun onPrepared(mp: MediaPlayer?) {
-        if (mp?.isPlaying == true) {
-            mp.start()
+        mp?.let {
+            if (!it.isPlaying) {
+                it.start()
+            }
         }
+
     }
 
 
@@ -192,6 +194,20 @@ class MusicPlayerService : Service(), MediaPlayer.OnCompletionListener,
             }
         }
         return false
+    }
+
+   override fun pauseMusic() {
+        mediaPlayer.pause()
+    }
+
+  override  fun getDuration(): Int {
+       return mediaPlayer.duration
+
+
+    }
+
+    override fun getCurrentPosition(): Int {
+        return mediaPlayer.currentPosition
     }
 
 }

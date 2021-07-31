@@ -77,12 +77,13 @@ class MusicActivity : AppCompatActivity(), MusicStoppedListener,View.OnClickList
 
 
     private fun stopPlayService() {
-        if (isMyServiceRunning(MusicPlayerService::class.java)){
-            MusicPlayerService.mediaPlayer.pause()
+        mService.pauseMusic()
+        /*if (isMyServiceRunning(MusicPlayerService::class.java)){
+          //  MusicPlayerService.mediaPlayer.pause()
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 stopService(intent)
             }
-        }
+        }*/
     }
 
     private fun playAudio() {
@@ -167,13 +168,13 @@ class MusicActivity : AppCompatActivity(), MusicStoppedListener,View.OnClickList
      * seekbar implementation and updating according to service behaviour
      */
          private fun initialiseSeekBar() {
-        binding?.musicSeekBar?.max = MusicPlayerService.mediaPlayer.duration
+        binding?.musicSeekBar?.max = mService.getDuration()
         val handler = Handler()
         handler.postDelayed(object : Runnable {
             override fun run() {
                 try {
-                    binding?.musicSeekBar?.progress = MusicPlayerService.mediaPlayer.currentPosition
-                    handler.postDelayed(this, 0)
+                    binding?.musicSeekBar?.progress = mService.getCurrentPosition()
+                    handler.postDelayed(this, 1000)
                 } catch (e: Exception) {
                     binding?.musicSeekBar?.progress = 0
                     Log.d("TAG", "Seekbar Error")
