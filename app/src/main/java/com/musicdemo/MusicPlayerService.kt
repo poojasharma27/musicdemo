@@ -155,6 +155,7 @@ class MusicPlayerService : Service(), MediaPlayer.OnCompletionListener,
         }
     }
 
+
     override fun onCompletion(mp: MediaPlayer?) {
         if (mp?.isPlaying == true) {
             mp.stop()
