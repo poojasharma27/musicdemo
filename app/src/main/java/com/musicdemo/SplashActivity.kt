@@ -24,7 +24,7 @@ class SplashActivity : AppCompatActivity() {
     }
 
     private fun onClickView() {
-        val handler = Handler()
+        val handler = Handler(mainLooper)
         handler.postDelayed({ startActivity(Intent(this@SplashActivity,MusicActivity::class.java)) }, 8000)
     }
 }

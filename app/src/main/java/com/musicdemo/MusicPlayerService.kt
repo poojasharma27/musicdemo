@@ -17,22 +17,19 @@ import androidx.core.app.NotificationManagerCompat
 
 
 class MusicPlayerService : Service(), MediaPlayer.OnCompletionListener,
-    MediaPlayer.OnPreparedListener, MediaPlayer.OnErrorListener {
+    MediaPlayer.OnPreparedListener, MediaPlayer.OnErrorListener, MusicPlayerCallBacks {
 
-    companion object {
-         lateinit var mediaPlayer: MediaPlayer
-    }
+    private lateinit var mediaPlayer: MediaPlayer
 
     private var link: String? = null
-   private lateinit var musicStoppedListener: MusicStoppedListener
     private val notifyId = 1
-  private  lateinit var manager: NotificationManager
-    private var isMusic: Boolean = false
+    private lateinit var manager: NotificationManager
+    var isServiceStarted: Boolean = false
 
     private val binder = LocalBinder()
 
-    inner class LocalBinder : Binder(){
-        fun getService() : MusicPlayerService = this@MusicPlayerService
+    inner class LocalBinder : Binder() {
+        fun getService(): MusicPlayerService = this@MusicPlayerService
     }
 
     override fun onBind(p0: Intent?): IBinder {
@@ -49,15 +46,14 @@ class MusicPlayerService : Service(), MediaPlayer.OnCompletionListener,
     @RequiresApi(Build.VERSION_CODES.Q)
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         link = intent?.getStringExtra("AudioLink")
-        if (!isMusic) {
+        if (!isServiceStarted) {
             mediaPlayer.reset()
-            musicStoppedListener = MyApplication.mContext as MusicStoppedListener
+
             if (!mediaPlayer.isPlaying) {
                 try {
                     mediaPlayer.setDataSource("https://file-examples-com.github.io/uploads/2017/11/file_example_MP3_700KB.mp3")
-                    mediaPlayer.prepare()
-                    mediaPlayer.start()
-                    isMusic = true
+                    mediaPlayer.prepareAsync()
+
                 } catch (e: Exception) {
                     Toast.makeText(this, " $TAG  : ${e.localizedMessage}", Toast.LENGTH_SHORT)
                         .show()
@@ -67,7 +63,7 @@ class MusicPlayerService : Service(), MediaPlayer.OnCompletionListener,
         } else {
             showNotification()
         }
-
+        isServiceStarted = true
         return START_STICKY
     }
 
@@ -98,41 +94,52 @@ class MusicPlayerService : Service(), MediaPlayer.OnCompletionListener,
         mediaPlayer.setOnErrorListener(this)
 
     }
+
     /*
     showNotification
      */
     private fun showNotification() {
         val images: Bitmap = BitmapFactory.decodeResource(resources, R.drawable.music)
         val notificationIntent = Intent(this, MusicActivity::class.java)
-        val pausePendingIntent = PendingIntent.getBroadcast(this, 1, Intent(this, PauseAction::class.java).setAction("notification_paused"), PendingIntent.FLAG_UPDATE_CURRENT)
-        val playPendingIntent = PendingIntent.getBroadcast(this, 2, Intent(this, PLayAction::class.java).setAction("notification_paused"), PendingIntent.FLAG_UPDATE_CURRENT)
+        val pausePendingIntent = PendingIntent.getBroadcast(
+            this,
+            1,
+            Intent(this, PauseAction::class.java).setAction("notification_paused"),
+            PendingIntent.FLAG_UPDATE_CURRENT
+        )
+        val playPendingIntent = PendingIntent.getBroadcast(
+            this,
+            2,
+            Intent(this, PlayAction::class.java).setAction("notification_paused"),
+            PendingIntent.FLAG_UPDATE_CURRENT
+        )
         val notification = NotificationCompat.Builder(this, "CHANNEL_ID")
             .setContentText("Hello Tune")
             .setSmallIcon(R.drawable.ic_launcher_foreground)
             .setLargeIcon(images)
             .setSilent(true)
-            .addAction(R.drawable.ic_baseline_pause_circle_outline_24 , "PAUSE" , pausePendingIntent)
+            .addAction(R.drawable.ic_baseline_pause_circle_outline_24, "PAUSE", pausePendingIntent)
             .addAction(R.drawable.ic_baseline_play_circle_outline_24, "PLAY", playPendingIntent)
         val max = mediaPlayer.duration
         var progress = 0
-        val handler = Handler()
+        val handler = Handler(mainLooper)
 
         /*
         Updating notification seekbar according to music progress
          */
-        with(NotificationManagerCompat.from(this)){
+        with(NotificationManagerCompat.from(this)) {
             notification.setProgress(max, progress, false)
             startForeground(notifyId, notification.build())
             Thread(Runnable {
-                while (progress < max){
+                while (progress < max) {
                     progress = mediaPlayer.currentPosition
                     try {
                         Thread.sleep(1000)
-                    } catch (e:InterruptedException){
+                    } catch (e: InterruptedException) {
                         e.printStackTrace()
                     }
                     handler.post(Runnable {
-                        if (progress == max){
+                        if (progress == max) {
                             notification.setContentText("Finished")
                             notification.setProgress(0, 0, false)
                         } else {
@@ -157,18 +164,21 @@ class MusicPlayerService : Service(), MediaPlayer.OnCompletionListener,
 
 
     override fun onCompletion(mp: MediaPlayer?) {
-        if (mp?.isPlaying == true) {
-            mp.stop()
-
+        /*mp?.let {
+            if (it.isPlaying) {
+                it.stop()
+            }
         }
-        musicStoppedListener.onMusicStop()
-        stopSelf()
+        stopSelf()*/
     }
 
     override fun onPrepared(mp: MediaPlayer?) {
-        if (mp?.isPlaying == true) {
-            mp.start()
+        mp?.let {
+            if (!it.isPlaying) {
+                it.start()
+            }
         }
+
     }
 
 
@@ -193,6 +203,29 @@ class MusicPlayerService : Service(), MediaPlayer.OnCompletionListener,
         }
         return false
     }
+
+    override fun pauseMusic() {
+        mediaPlayer.pause()
+    }
+
+    override fun getDuration(): Int {
+        return mediaPlayer.duration
+
+
+    }
+
+    override fun getCurrentPosition(): Int {
+        return mediaPlayer.currentPosition
+    }
+
+    override fun playMusic() {
+        mediaPlayer.start()
+    }
+
+    fun isPlaying(): Boolean {
+        return mediaPlayer.isPlaying
+    }
+
 
 }
 
