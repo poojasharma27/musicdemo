@@ -21,7 +21,7 @@
         <activity android:name=".ContactActivity"></activity>
 
         <receiver android:name=".PauseAction" />
-        <receiver android:name=".PLayAction" />
+        <receiver android:name=".PlayAction" />
 
         <activity android:name=".SplashActivity">
             <intent-filter>

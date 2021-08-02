@@ -1,10 +1,7 @@
 package com.musicdemo
 
 import android.app.ActivityManager
-import android.content.ComponentName
-import android.content.Context
-import android.content.Intent
-import android.content.ServiceConnection
+import android.content.*
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
@@ -12,16 +9,35 @@ import android.os.IBinder
 import android.util.Log
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.musicdemo.databinding.ActivityMainBinding
 
 class MusicActivity : AppCompatActivity(), MusicStoppedListener, View.OnClickListener {
 
     private var binding: ActivityMainBinding? = null
     val audioLink = "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3"
-    private var musicPlaying: Boolean = false
+
+    //private var musicPlaying: Boolean = false
     private lateinit var serviceIntent: Intent
     private lateinit var mService: MusicPlayerService
     private var mBound: Boolean = false
+
+    var broadcastReceiver: BroadcastReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context?, intent: Intent?) {
+
+            intent?.apply {
+                when (this.getStringExtra(Music.MUSIC.name)){
+                    Music.PLAY.name -> {
+                        mService.playMusic()
+                    }
+                    Music.PAUSE.name -> {
+                        mService.pauseMusic()
+                    }
+                }
+            }
+
+        }
+    }
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -34,66 +50,65 @@ class MusicActivity : AppCompatActivity(), MusicStoppedListener, View.OnClickLis
             it.musicImageView.animate()?.translationY(0f)?.setDuration(2000)?.startDelay = 2900
             it.addImageView.setOnClickListener(this)
             it.musicSeekBar.isEnabled = false
-            it.pause.isEnabled = false
+
+            enablePlay(it)
         }
         serviceIntent = Intent(this, MusicPlayerService::class.java)
-        addOnClick()
 
+        LocalBroadcastManager.getInstance(this)
+            .registerReceiver(broadcastReceiver, IntentFilter(Music.MUSIC.name))
+
+        addOnClick()
 
     }
 
     private fun addOnClick() {
-        binding?.let {
-            it.play.setOnClickListener {
-                if (!musicPlaying) {
-                    binding?.pause?.isEnabled = true
-                    binding?.play?.isEnabled = false
-                    playAudio()
-                    initialiseSeekBar()
-                    musicPlaying = true
+        binding?.apply {
+            play.setOnClickListener {
+                enablePause(this)
+                playAudio()
+                initialiseSeekBar()
 
-                }
             }
-            it.pause.setOnClickListener {
-                binding?.pause?.isEnabled = false
-                binding?.play?.isEnabled = true
-                stopPlayService()
-                musicPlaying = false
+            pause.setOnClickListener {
+                enablePlay(this)
+                mService.pauseMusic()
             }
         }
     }
 
+    fun enablePlay(binding: ActivityMainBinding?) {
+        binding?.let {
+            binding.pause.isEnabled = false
+            binding.play.isEnabled = true
+        }
+    }
+
+    fun enablePause(binding: ActivityMainBinding?) {
+        binding?.let {
+            binding.pause.isEnabled = true
+            binding.play.isEnabled = false
+        }
+    }
 
     private fun addNotification() {
-        if (musicPlaying.equals(true)) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                startForegroundService(serviceIntent)
-                Log.e("TAG", "true")
-            } else {
-                startService(serviceIntent)
-                Log.e("TAG", "false")
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            startForegroundService(serviceIntent)
+            Log.e("TAG", "true")
+        } else {
+            startService(serviceIntent)
+            Log.e("TAG", "false")
 
-            }
         }
     }
 
 
-    private fun stopPlayService() {
-        mService.pauseMusic()
-        /*if (isMyServiceRunning(MusicPlayerService::class.java)){
-          //  MusicPlayerService.mediaPlayer.pause()
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                stopService(intent)
-            }
-        }*/
-    }
-
     private fun playAudio() {
-      if (!mService.isPlaying()) {
-          startService(serviceIntent)
-      }else{
-          mService.playMusic()
-      }
+        if (!mService.isServiceStarted) {
+            startService(serviceIntent)
+        } else {
+            mService.playMusic()
+        }
     }
 
     /**
@@ -135,6 +150,7 @@ class MusicActivity : AppCompatActivity(), MusicStoppedListener, View.OnClickLis
             mBound = true
 
         }
+
         override fun onServiceDisconnected(p0: ComponentName?) {
             mBound = false
         }
@@ -156,11 +172,15 @@ class MusicActivity : AppCompatActivity(), MusicStoppedListener, View.OnClickLis
      * musicStop then automatic complete
      */
     override fun onMusicStop() {
-        binding?.play?.isEnabled = true
-        binding?.pause?.isEnabled = false
-        musicPlaying = false
+        enablePlay(binding)
     }
 
+
+    override fun onDestroy() {
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(broadcastReceiver)
+
+        super.onDestroy()
+    }
 
     /**
      * seekbar implementation and updating according to service behaviour
