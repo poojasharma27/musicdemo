@@ -11,56 +11,58 @@ import android.os.Handler
 import android.os.IBinder
 import android.util.Log
 import android.view.View
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.musicdemo.databinding.ActivityMainBinding
 
-class MusicActivity : AppCompatActivity(), MusicStoppedListener,View.OnClickListener {
+class MusicActivity : AppCompatActivity(), MusicStoppedListener, View.OnClickListener {
 
     private var binding: ActivityMainBinding? = null
     val audioLink = "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3"
-     private  var musicPlaying: Boolean = false
-     private  lateinit var serviceIntent: Intent
+    private var musicPlaying: Boolean = false
+    private lateinit var serviceIntent: Intent
     private lateinit var mService: MusicPlayerService
     private var mBound: Boolean = false
-
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
-        setContentView(binding?.root)
-        binding?.playStopImageView?.setBackgroundResource(R.drawable.ic_baseline_play_circle_outline_24)
+        binding?.also {
+            setContentView(it.root)
+            it.playStopImageView.setBackgroundResource(R.drawable.ic_baseline_play_circle_outline_24)
+            MyApplication.mContext = this
+            it.musicImageView.animate()?.translationY(0f)?.setDuration(2000)?.startDelay = 2900
+            it.addImageView.setOnClickListener(this)
+            it.musicSeekBar.isEnabled = false
+            it.pause.isEnabled = false
+        }
         serviceIntent = Intent(this, MusicPlayerService::class.java)
-        MyApplication.mContext = this
-        binding?.musicImageView?.animate()?.translationY(0f)?.setDuration(2000)?.setStartDelay(2900)
-        binding?.addImageView?.setOnClickListener(this)
-        binding?.musicSeekBar?.isEnabled = false
-        binding?.pause?.isEnabled = false
+        addOnClick()
 
-        binding?.play?.setOnClickListener {
-            if (!musicPlaying) {
-                binding?.pause?.isEnabled = true
-                binding?.play?.isEnabled = false
-                playAudio()
-                initialiseSeekBar()
-                musicPlaying = true
 
+    }
+
+    private fun addOnClick() {
+        binding?.let {
+            it.play.setOnClickListener {
+                if (!musicPlaying) {
+                    binding?.pause?.isEnabled = true
+                    binding?.play?.isEnabled = false
+                    playAudio()
+                    initialiseSeekBar()
+                    musicPlaying = true
+
+                }
+            }
+            it.pause.setOnClickListener {
+                binding?.pause?.isEnabled = false
+                binding?.play?.isEnabled = true
+                stopPlayService()
+                musicPlaying = false
             }
         }
-        binding?.pause?.setOnClickListener {
-       binding?.pause?.isEnabled = false
-       binding?.play?.isEnabled = true
-       stopPlayService()
-       musicPlaying = false
-       }
-
     }
 
-    override fun onPause() {
-        super.onPause()
-        addNotification()
-    }
 
     private fun addNotification() {
         if (musicPlaying.equals(true)) {
@@ -87,38 +89,32 @@ class MusicActivity : AppCompatActivity(), MusicStoppedListener,View.OnClickList
     }
 
     private fun playAudio() {
-        try {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                startService(serviceIntent)
-                MusicPlayerService.mediaPlayer.start()
-            }
-        } catch (e: SecurityException) {
-            Toast.makeText(this, "Error" + e.message, Toast.LENGTH_SHORT).show()
-        }
 
+        startService(serviceIntent)
     }
+
     /**
      * bind service on start to avoid late init media player is not initialised
      */
-        override fun onStart() {
+    override fun onStart() {
         super.onStart()
         bindService(serviceIntent, connection, Context.BIND_AUTO_CREATE)
 
-        }
+    }
 
 
-   /**
-    * checking that is my service is running or not
-    */
+    /**
+     * checking that is my service is running or not
+     */
 
-   private fun isMyServiceRunning(java: Class<MusicPlayerService>): Boolean {
+    private fun isMyServiceRunning(java: Class<MusicPlayerService>): Boolean {
         val manager: ActivityManager = getSystemService(
             ACTIVITY_SERVICE
         ) as ActivityManager
 
         for (service: ActivityManager.RunningServiceInfo in
-        manager.getRunningServices(Integer.MAX_VALUE)){
-            if (java.name.equals(service.service.className)){
+        manager.getRunningServices(Integer.MAX_VALUE)) {
+            if (java.name.equals(service.service.className)) {
                 return true
             }
         }
@@ -126,16 +122,16 @@ class MusicActivity : AppCompatActivity(), MusicStoppedListener,View.OnClickList
     }
 
 
-
     /**
      * Service Connection for bound service
      */
-    private val connection  = object : ServiceConnection {
+    private val connection = object : ServiceConnection {
         override fun onServiceConnected(className: ComponentName?, service: IBinder?) {
             val binder = service as MusicPlayerService.LocalBinder
             mService = binder.getService()
             mBound = true
         }
+
         override fun onServiceDisconnected(p0: ComponentName?) {
             mBound = false
         }
@@ -147,29 +143,28 @@ class MusicActivity : AppCompatActivity(), MusicStoppedListener,View.OnClickList
      */
     override fun onStop() {
         super.onStop()
+        addNotification()
         unbindService(connection)
         mBound = false
     }
 
 
-
     /**
      * musicStop then automatic complete
      */
-      override fun onMusicStop() {
-        binding?.play?.isEnabled=true
-        binding?.pause?.isEnabled=false
+    override fun onMusicStop() {
+        binding?.play?.isEnabled = true
+        binding?.pause?.isEnabled = false
         musicPlaying = false
     }
-
 
 
     /**
      * seekbar implementation and updating according to service behaviour
      */
-         private fun initialiseSeekBar() {
+    private fun initialiseSeekBar() {
         binding?.musicSeekBar?.max = mService.getDuration()
-        val handler = Handler()
+        val handler = Handler(mainLooper)
         handler.postDelayed(object : Runnable {
             override fun run() {
                 try {
@@ -186,7 +181,7 @@ class MusicActivity : AppCompatActivity(), MusicStoppedListener,View.OnClickList
     }
 
     override fun onClick(v: View?) {
-        val intent = Intent(this,ContactActivity::class.java)
+        val intent = Intent(this, ContactActivity::class.java)
         startActivity(intent)
     }
 

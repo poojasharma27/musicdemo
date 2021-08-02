@@ -11,6 +11,5 @@ class PauseAction() : BroadcastReceiver() {
     override fun onReceive(p0: Context?, p1: Intent?) {
         Log.d("BROADCAST", "in broadcast")
         MusicPlayerService.mediaPlayer.pause()
-        //MyForegroundService().
     }
 }

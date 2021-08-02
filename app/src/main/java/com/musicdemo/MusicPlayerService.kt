@@ -19,10 +19,10 @@ import androidx.core.app.NotificationManagerCompat
 class MusicPlayerService : Service(), MediaPlayer.OnCompletionListener,
     MediaPlayer.OnPreparedListener, MediaPlayer.OnErrorListener,MusicPlayerCallBacks {
 
+         companion object {
+             lateinit var mediaPlayer: MediaPlayer
 
-         lateinit var mediaPlayer: MediaPlayer
-
-
+         }
     private var link: String? = null
    private lateinit var musicStoppedListener: MusicStoppedListener
     private val notifyId = 1
@@ -63,9 +63,10 @@ class MusicPlayerService : Service(), MediaPlayer.OnCompletionListener,
                     e.printStackTrace()
                 }
             }
-        } else {
-            showNotification()
         }
+      else {
+            showNotification()
+       }
 
         return START_STICKY
     }
@@ -114,7 +115,7 @@ class MusicPlayerService : Service(), MediaPlayer.OnCompletionListener,
             .addAction(R.drawable.ic_baseline_play_circle_outline_24, "PLAY", playPendingIntent)
         val max = mediaPlayer.duration
         var progress = 0
-        val handler = Handler()
+        val handler = Handler(mainLooper)
 
         /*
         Updating notification seekbar according to music progress
@@ -156,10 +157,13 @@ class MusicPlayerService : Service(), MediaPlayer.OnCompletionListener,
 
 
     override fun onCompletion(mp: MediaPlayer?) {
-        if (mp?.isPlaying == true) {
-            mp.stop()
+        mp?.let {
+            if (it.isPlaying) {
+                it.stop()
 
+            }
         }
+
         musicStoppedListener.onMusicStop()
         stopSelf()
     }
@@ -208,6 +212,10 @@ class MusicPlayerService : Service(), MediaPlayer.OnCompletionListener,
 
     override fun getCurrentPosition(): Int {
         return mediaPlayer.currentPosition
+    }
+
+    override fun playMusic() {
+   mediaPlayer.start()
     }
 
 }
