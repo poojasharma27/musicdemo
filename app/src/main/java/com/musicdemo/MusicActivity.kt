@@ -89,8 +89,11 @@ class MusicActivity : AppCompatActivity(), MusicStoppedListener, View.OnClickLis
     }
 
     private fun playAudio() {
-
-        startService(serviceIntent)
+      if (!mService.isPlaying()) {
+          startService(serviceIntent)
+      }else{
+          mService.playMusic()
+      }
     }
 
     /**
@@ -130,8 +133,8 @@ class MusicActivity : AppCompatActivity(), MusicStoppedListener, View.OnClickLis
             val binder = service as MusicPlayerService.LocalBinder
             mService = binder.getService()
             mBound = true
-        }
 
+        }
         override fun onServiceDisconnected(p0: ComponentName?) {
             mBound = false
         }

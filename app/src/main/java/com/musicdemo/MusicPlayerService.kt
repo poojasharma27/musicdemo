@@ -27,7 +27,7 @@ class MusicPlayerService : Service(), MediaPlayer.OnCompletionListener,
    private lateinit var musicStoppedListener: MusicStoppedListener
     private val notifyId = 1
   private  lateinit var manager: NotificationManager
-    private var isMusic: Boolean = false
+     var isMusicPlaying: Boolean = false
 
     private val binder = LocalBinder()
 
@@ -49,14 +49,14 @@ class MusicPlayerService : Service(), MediaPlayer.OnCompletionListener,
     @RequiresApi(Build.VERSION_CODES.Q)
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         link = intent?.getStringExtra("AudioLink")
-        if (!isMusic) {
+        if (!isMusicPlaying) {
             mediaPlayer.reset()
             musicStoppedListener = MyApplication.mContext as MusicStoppedListener
             if (!mediaPlayer.isPlaying) {
                 try {
                     mediaPlayer.setDataSource("https://file-examples-com.github.io/uploads/2017/11/file_example_MP3_700KB.mp3")
                     mediaPlayer.prepareAsync()
-                    isMusic = true
+                    isMusicPlaying = true
                 } catch (e: Exception) {
                     Toast.makeText(this, " $TAG  : ${e.localizedMessage}", Toast.LENGTH_SHORT)
                         .show()
@@ -217,6 +217,11 @@ class MusicPlayerService : Service(), MediaPlayer.OnCompletionListener,
     override fun playMusic() {
    mediaPlayer.start()
     }
+
+    fun isPlaying():Boolean {
+      return  mediaPlayer.isPlaying
+    }
+
 
 }
 
