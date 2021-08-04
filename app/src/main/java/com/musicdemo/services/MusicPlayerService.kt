@@ -1,4 +1,4 @@
-package com.musicdemo
+package com.musicdemo.services
 
 import android.app.*
 import android.content.ContentValues.TAG
@@ -14,10 +14,15 @@ import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
+import com.musicdemo.listeners.MusicPlayerListener
+import com.musicdemo.broadcasts.PauseActionBroadcastReceiver
+import com.musicdemo.broadcasts.PlayActionBroadcastReceiver
+import com.musicdemo.R
+import com.musicdemo.ui.MusicActivity
 
 
 class MusicPlayerService : Service(), MediaPlayer.OnCompletionListener,
-    MediaPlayer.OnPreparedListener, MediaPlayer.OnErrorListener, MusicPlayerCallBacks {
+    MediaPlayer.OnPreparedListener, MediaPlayer.OnErrorListener, MusicPlayerListener {
 
      lateinit var mediaPlayer: MediaPlayer
 
@@ -103,13 +108,13 @@ class MusicPlayerService : Service(), MediaPlayer.OnCompletionListener,
         val pausePendingIntent = PendingIntent.getBroadcast(
             this,
             1,
-            Intent(this, PauseAction::class.java).setAction("notification_paused"),
+            Intent(this, PauseActionBroadcastReceiver::class.java).setAction("notification_paused"),
             PendingIntent.FLAG_UPDATE_CURRENT
         )
         val playPendingIntent = PendingIntent.getBroadcast(
             this,
             2,
-            Intent(this, PlayAction::class.java).setAction("notification_paused"),
+            Intent(this, PlayActionBroadcastReceiver::class.java).setAction("notification_paused"),
             PendingIntent.FLAG_UPDATE_CURRENT
         )
         val notification = NotificationCompat.Builder(this, "CHANNEL_ID")

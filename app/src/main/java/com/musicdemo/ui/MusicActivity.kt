@@ -1,4 +1,4 @@
-package com.musicdemo
+package com.musicdemo.ui
 
 import android.app.ActivityManager
 import android.content.*
@@ -12,10 +12,12 @@ import android.widget.SeekBar
 import android.widget.SeekBar.OnSeekBarChangeListener
 import androidx.appcompat.app.AppCompatActivity
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
+import com.musicdemo.*
 import com.musicdemo.databinding.ActivityMainBinding
+import com.musicdemo.services.MusicPlayerService
+import com.musicdemo.ui.weather.WeatherActivity
 
-
-class MusicActivity : AppCompatActivity(), MusicStoppedListener, View.OnClickListener {
+class MusicActivity : AppCompatActivity(), View.OnClickListener {
 
     private var binding: ActivityMainBinding? = null
     val audioLink = "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3"
@@ -29,7 +31,7 @@ class MusicActivity : AppCompatActivity(), MusicStoppedListener, View.OnClickLis
         override fun onReceive(context: Context?, intent: Intent?) {
 
             intent?.apply {
-                when (this.getStringExtra(Music.MUSIC.name)){
+                when (this.getStringExtra(Music.MUSIC.name)) {
                     Music.PLAY.name -> {
                         mService.playMusic()
                     }
@@ -48,7 +50,6 @@ class MusicActivity : AppCompatActivity(), MusicStoppedListener, View.OnClickLis
         binding?.also {
             setContentView(it.root)
             it.playStopImageView.setBackgroundResource(R.drawable.ic_baseline_play_circle_outline_24)
-            MyApplication.mContext = this
             it.musicImageView.animate()?.translationY(0f)?.setDuration(2000)?.startDelay = 2900
             it.addImageView.setOnClickListener(this)
             it.musicSeekBar.isEnabled = false
@@ -74,6 +75,10 @@ class MusicActivity : AppCompatActivity(), MusicStoppedListener, View.OnClickLis
             pause.setOnClickListener {
                 enablePlay(this)
                 mService.pauseMusic()
+            }
+
+            weatherButton.setOnClickListener {
+                startActivity(Intent(this@MusicActivity, WeatherActivity::class.java))
             }
         }
     }
@@ -167,17 +172,10 @@ class MusicActivity : AppCompatActivity(), MusicStoppedListener, View.OnClickLis
      */
     override fun onStop() {
         super.onStop()
-        addNotification()
+        //TODO add condition - launch notification only in case music is playing
+        //addNotification()
         unbindService(connection)
         mBound = false
-    }
-
-
-    /**
-     * musicStop then automatic complete
-     */
-    override fun onMusicStop() {
-        enablePlay(binding)
     }
 
 

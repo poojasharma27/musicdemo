@@ -1,4 +1,4 @@
-package com.musicdemo
+package com.musicdemo.ui
 
 import android.Manifest
 import android.content.pm.PackageManager
