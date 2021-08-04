@@ -1,4 +1,4 @@
-package com.musicdemo
+package com.musicdemo.ui
 
 import android.app.ActivityManager
 import android.content.*
@@ -8,16 +8,21 @@ import android.os.Handler
 import android.os.IBinder
 import android.util.Log
 import android.view.View
+import android.widget.SeekBar
+import android.widget.SeekBar.OnSeekBarChangeListener
 import androidx.appcompat.app.AppCompatActivity
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
+import com.musicdemo.*
 import com.musicdemo.databinding.ActivityMainBinding
+import com.musicdemo.services.MusicPlayerService
+import com.musicdemo.ui.weather.WeatherActivity
 
-class MusicActivity : AppCompatActivity(), MusicStoppedListener, View.OnClickListener {
+class MusicActivity : AppCompatActivity(), View.OnClickListener {
 
     private var binding: ActivityMainBinding? = null
     val audioLink = "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3"
 
-    //private var musicPlaying: Boolean = false
+  //  private var musicPlaying: Boolean = false
     private lateinit var serviceIntent: Intent
     private lateinit var mService: MusicPlayerService
     private var mBound: Boolean = false
@@ -26,7 +31,7 @@ class MusicActivity : AppCompatActivity(), MusicStoppedListener, View.OnClickLis
         override fun onReceive(context: Context?, intent: Intent?) {
 
             intent?.apply {
-                when (this.getStringExtra(Music.MUSIC.name)){
+                when (this.getStringExtra(Music.MUSIC.name)) {
                     Music.PLAY.name -> {
                         mService.playMusic()
                     }
@@ -46,7 +51,6 @@ class MusicActivity : AppCompatActivity(), MusicStoppedListener, View.OnClickLis
         binding?.also {
             setContentView(it.root)
             it.playStopImageView.setBackgroundResource(R.drawable.ic_baseline_play_circle_outline_24)
-            MyApplication.mContext = this
             it.musicImageView.animate()?.translationY(0f)?.setDuration(2000)?.startDelay = 2900
             it.addImageView.setOnClickListener(this)
             it.musicSeekBar.isEnabled = false
@@ -67,12 +71,15 @@ class MusicActivity : AppCompatActivity(), MusicStoppedListener, View.OnClickLis
             play.setOnClickListener {
                 enablePause(this)
                 playAudio()
-                initialiseSeekBar()
 
             }
             pause.setOnClickListener {
                 enablePlay(this)
                 mService.pauseMusic()
+            }
+
+            weatherButton.setOnClickListener {
+                startActivity(Intent(this@MusicActivity, WeatherActivity::class.java))
             }
         }
     }
@@ -106,9 +113,13 @@ class MusicActivity : AppCompatActivity(), MusicStoppedListener, View.OnClickLis
     private fun playAudio() {
         if (!mService.isServiceStarted) {
             startService(serviceIntent)
+
         } else {
             mService.playMusic()
+
         }
+        initialiseSeekBar()
+
     }
 
     /**
@@ -162,17 +173,10 @@ class MusicActivity : AppCompatActivity(), MusicStoppedListener, View.OnClickLis
      */
     override fun onStop() {
         super.onStop()
-        addNotification()
+        //TODO add condition - launch notification only in case music is playing
+        //addNotification()
         unbindService(connection)
         mBound = false
-    }
-
-
-    /**
-     * musicStop then automatic complete
-     */
-    override fun onMusicStop() {
-        enablePlay(binding)
     }
 
 
@@ -185,6 +189,33 @@ class MusicActivity : AppCompatActivity(), MusicStoppedListener, View.OnClickLis
     /**
      * seekbar implementation and updating according to service behaviour
      */
+   /* private fun initialiseSeekBar() {
+            binding?.musicSeekBar?.max = mService.getDuration()%1000
+            val handler = Handler(mainLooper)
+            handler.post(object : Runnable {
+                override fun run() {
+                    try {
+                        binding?.musicSeekBar?.progress = mService.getCurrentPosition()%1000
+                        handler.postDelayed(this, 1000)
+                    } catch (e: Exception) {
+                        binding?.musicSeekBar?.progress = 0
+                        Log.d("TAG", "Seekbar Error")
+                    }
+
+                }
+
+            })
+        binding?.musicSeekBar?.setOnSeekBarChangeListener(object : OnSeekBarChangeListener {
+            override fun onStopTrackingTouch(seekBar: SeekBar) {}
+            override fun onStartTrackingTouch(seekBar: SeekBar) {}
+            override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
+                if (mService.mediaPlayer != null && fromUser) {
+                    mService.mediaPlayer.seekTo(progress * 1000)
+                }
+            }
+        })
+    }
+*/
     private fun initialiseSeekBar() {
         binding?.musicSeekBar?.max = mService.getDuration()
         val handler = Handler(mainLooper)
@@ -202,7 +233,6 @@ class MusicActivity : AppCompatActivity(), MusicStoppedListener, View.OnClickLis
 
         }, 0)
     }
-
     override fun onClick(v: View?) {
         val intent = Intent(this, ContactActivity::class.java)
         startActivity(intent)

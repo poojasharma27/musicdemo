@@ -1,6 +1,6 @@
-package com.musicdemo
+package com.musicdemo.listeners
 
-interface MusicPlayerCallBacks {
+interface MusicPlayerListener {
     fun pauseMusic()
     fun getDuration(): Int
     fun getCurrentPosition(): Int

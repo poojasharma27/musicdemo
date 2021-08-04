@@ -1,4 +1,4 @@
-package com.musicdemo
+package com.musicdemo.services
 
 import android.app.*
 import android.content.ContentValues.TAG
@@ -14,12 +14,17 @@ import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
+import com.musicdemo.listeners.MusicPlayerListener
+import com.musicdemo.broadcasts.PauseActionBroadcastReceiver
+import com.musicdemo.broadcasts.PlayActionBroadcastReceiver
+import com.musicdemo.R
+import com.musicdemo.ui.MusicActivity
 
 
 class MusicPlayerService : Service(), MediaPlayer.OnCompletionListener,
-    MediaPlayer.OnPreparedListener, MediaPlayer.OnErrorListener, MusicPlayerCallBacks {
+    MediaPlayer.OnPreparedListener, MediaPlayer.OnErrorListener, MusicPlayerListener {
 
-    private lateinit var mediaPlayer: MediaPlayer
+     lateinit var mediaPlayer: MediaPlayer
 
     private var link: String? = null
     private val notifyId = 1
@@ -48,7 +53,6 @@ class MusicPlayerService : Service(), MediaPlayer.OnCompletionListener,
         link = intent?.getStringExtra("AudioLink")
         if (!isServiceStarted) {
             mediaPlayer.reset()
-
             if (!mediaPlayer.isPlaying) {
                 try {
                     mediaPlayer.setDataSource("https://file-examples-com.github.io/uploads/2017/11/file_example_MP3_700KB.mp3")
@@ -104,13 +108,13 @@ class MusicPlayerService : Service(), MediaPlayer.OnCompletionListener,
         val pausePendingIntent = PendingIntent.getBroadcast(
             this,
             1,
-            Intent(this, PauseAction::class.java).setAction("notification_paused"),
+            Intent(this, PauseActionBroadcastReceiver::class.java).setAction("notification_paused"),
             PendingIntent.FLAG_UPDATE_CURRENT
         )
         val playPendingIntent = PendingIntent.getBroadcast(
             this,
             2,
-            Intent(this, PlayAction::class.java).setAction("notification_paused"),
+            Intent(this, PlayActionBroadcastReceiver::class.java).setAction("notification_paused"),
             PendingIntent.FLAG_UPDATE_CURRENT
         )
         val notification = NotificationCompat.Builder(this, "CHANNEL_ID")
