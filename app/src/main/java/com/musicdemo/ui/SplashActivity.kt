@@ -1,4 +1,4 @@
-package com.musicdemo
+package com.musicdemo.ui
 
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
@@ -25,7 +25,7 @@ class SplashActivity : AppCompatActivity() {
 
     private fun onClickView() {
         val handler = Handler(mainLooper)
-        handler.postDelayed({ startActivity(Intent(this@SplashActivity,MusicActivity::class.java)) }, 8000)
+        handler.postDelayed({ startActivity(Intent(this@SplashActivity, MusicActivity::class.java)) }, 8000)
     }
 }
 
