@@ -24,7 +24,7 @@ import com.musicdemo.ui.MusicActivity
 class MusicPlayerService : Service(), MediaPlayer.OnCompletionListener,
     MediaPlayer.OnPreparedListener, MediaPlayer.OnErrorListener, MusicPlayerListener {
 
-    private lateinit var mediaPlayer: MediaPlayer
+     lateinit var mediaPlayer: MediaPlayer
 
     private var link: String? = null
     private val notifyId = 1
@@ -53,7 +53,6 @@ class MusicPlayerService : Service(), MediaPlayer.OnCompletionListener,
         link = intent?.getStringExtra("AudioLink")
         if (!isServiceStarted) {
             mediaPlayer.reset()
-
             if (!mediaPlayer.isPlaying) {
                 try {
                     mediaPlayer.setDataSource("https://file-examples-com.github.io/uploads/2017/11/file_example_MP3_700KB.mp3")
