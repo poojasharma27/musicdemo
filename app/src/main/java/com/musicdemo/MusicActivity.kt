@@ -42,7 +42,6 @@ class MusicActivity : AppCompatActivity(), MusicStoppedListener, View.OnClickLis
         }
     }
 
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
