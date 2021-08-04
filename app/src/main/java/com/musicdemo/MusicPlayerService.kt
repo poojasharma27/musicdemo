@@ -19,7 +19,7 @@ import androidx.core.app.NotificationManagerCompat
 class MusicPlayerService : Service(), MediaPlayer.OnCompletionListener,
     MediaPlayer.OnPreparedListener, MediaPlayer.OnErrorListener, MusicPlayerCallBacks {
 
-    private lateinit var mediaPlayer: MediaPlayer
+     lateinit var mediaPlayer: MediaPlayer
 
     private var link: String? = null
     private val notifyId = 1
@@ -48,7 +48,6 @@ class MusicPlayerService : Service(), MediaPlayer.OnCompletionListener,
         link = intent?.getStringExtra("AudioLink")
         if (!isServiceStarted) {
             mediaPlayer.reset()
-
             if (!mediaPlayer.isPlaying) {
                 try {
                     mediaPlayer.setDataSource("https://file-examples-com.github.io/uploads/2017/11/file_example_MP3_700KB.mp3")
