@@ -1,7 +1,6 @@
 package com.musicdemo.di.modules
 
 import com.musicdemo.network.ApiService
-import com.squareup.moshi.Moshi
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -20,4 +19,7 @@ object AppModule{
         .baseUrl(baseUrl)
         .addConverterFactory(MoshiConverterFactory.create())
         .build().create(ApiService::class.java)
+
+
+
 }

@@ -11,7 +11,6 @@ import dagger.hilt.android.components.ActivityComponent
 @Module
 @InstallIn(ActivityComponent::class)
 object RepositoryModule {
-
     @Provides
     fun provideWeatherRepo(apiService: ApiService) = WeatherRepository(apiService)
 

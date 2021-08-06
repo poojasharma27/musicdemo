@@ -1,125 +1,132 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="#341125"
-    tools:context=".ui.MusicActivity">
+    xmlns:tools="http://schemas.android.com/tools">
 
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Weather"
-        android:id="@+id/weatherButton"/>
+    <data>
 
-    <ImageView
-        android:id="@+id/addImageView"
-        android:layout_width="20dp"
-        android:layout_height="20dp"
-        android:background="@drawable/ic_baseline_add_circle_outline_24"
-        android:scaleType="fitXY"
-        android:layout_margin="@dimen/margin16"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+    </data>
 
-    <com.airbnb.lottie.LottieAnimationView
-        android:id="@+id/musicImageView"
-        android:layout_width="300dp"
-        android:layout_height="300dp"
-        android:layout_marginStart="@dimen/margin48"
-        android:layout_marginTop="@dimen/margin48"
-        android:layout_marginEnd="@dimen/margin48"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:lottie_autoPlay="true"
-        app:lottie_loop="true"
-        android:elevation="5dp"
-        app:lottie_rawRes="@raw/music" />
-   <!-- <ImageView
-        android:id="@+id/musicImageView"
-        android:layout_width="300dp"
-        android:layout_height="300dp"
-        android:layout_marginStart="@dimen/margin48"
-        android:layout_marginTop="@dimen/margin48"
-        android:layout_marginEnd="@dimen/margin48"
-        android:background="@drawable/music"
-        android:scaleType="fitXY"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />-->
-
-    <SeekBar
-        android:id="@+id/musicSeekBar"
-        android:layout_width="300dp"
-        android:layout_height="10dp"
-        android:layout_marginStart="@dimen/margin20"
-        android:layout_marginTop="@dimen/margin32"
-        android:layout_marginBottom="@dimen/margin20"
-        app:layout_constraintLeft_toLeftOf="parent"
-        android:progressDrawable="@drawable/progress"
-        android:thumb="@drawable/thumb"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/musicImageView" />
-
-    <ImageView
-        android:id="@+id/playStopImageView"
-        android:layout_width="80dp"
-        android:layout_height="80dp"
-        android:layout_marginTop="@dimen/margin24"
-        android:background="@drawable/ic_baseline_play_circle_outline_24"
-        android:visibility="gone"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/musicSeekBar" />
-
-    <LinearLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/margin40"
-        android:gravity="center"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/musicSeekBar">
+        android:layout_height="match_parent"
+        android:background="#341125"
+        tools:context=".ui.MusicActivity">
 
-
-        <TextView
-            android:id="@+id/txtStartTime"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
-
-        <ImageButton
-            android:id="@+id/skipBack"
+        <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/ic_baseline_fast_rewind_24" />
+            android:text="Weather"
+            android:id="@+id/weatherButton" />
 
-        <ImageButton
-            android:id="@+id/play"
-            android:layout_width="70dp"
-            android:layout_height="70dp"
-            android:src="@drawable/ic_baseline_play_circle_outline_24" />
+        <ImageView
+            android:id="@+id/addImageView"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:background="@drawable/ic_baseline_add_circle_outline_24"
+            android:scaleType="fitXY"
+            android:layout_margin="@dimen/margin16"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
-        <ImageButton
-            android:id="@+id/pause"
-            android:layout_width="70dp"
-            android:layout_height="70dp"
-            android:src="@drawable/ic_baseline_pause_circle_outline_24" />
+        <com.airbnb.lottie.LottieAnimationView
+            android:id="@+id/musicImageView"
+            android:layout_width="300dp"
+            android:layout_height="300dp"
+            android:layout_marginStart="@dimen/margin48"
+            android:layout_marginTop="@dimen/margin48"
+            android:layout_marginEnd="@dimen/margin48"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:lottie_autoPlay="true"
+            app:lottie_loop="true"
+            android:elevation="5dp"
+            app:lottie_rawRes="@raw/music" />
+        <!-- <ImageView
+             android:id="@+id/musicImageView"
+             android:layout_width="300dp"
+             android:layout_height="300dp"
+             android:layout_marginStart="@dimen/margin48"
+             android:layout_marginTop="@dimen/margin48"
+             android:layout_marginEnd="@dimen/margin48"
+             android:background="@drawable/music"
+             android:scaleType="fitXY"
+             app:layout_constraintEnd_toEndOf="parent"
+             app:layout_constraintStart_toStartOf="parent"
+             app:layout_constraintTop_toTopOf="parent" />-->
 
-        <ImageButton
-            android:id="@+id/skipNext"
-            android:layout_width="wrap_content"
+        <SeekBar
+            android:id="@+id/musicSeekBar"
+            android:layout_width="300dp"
+            android:layout_height="10dp"
+            android:layout_marginStart="@dimen/margin20"
+            android:layout_marginTop="@dimen/margin32"
+            android:layout_marginBottom="@dimen/margin20"
+            app:layout_constraintLeft_toLeftOf="parent"
+            android:progressDrawable="@drawable/progress"
+            android:thumb="@drawable/thumb"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/musicImageView" />
+
+        <ImageView
+            android:id="@+id/playStopImageView"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:layout_marginTop="@dimen/margin24"
+            android:background="@drawable/ic_baseline_play_circle_outline_24"
+            android:visibility="gone"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/musicSeekBar" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:src="@drawable/ic_baseline_fast_forward_24" />
-
-        <TextView
-            android:id="@+id/txtSongTime"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
-
-
-    </LinearLayout>
+            android:layout_marginTop="@dimen/margin40"
+            android:gravity="center"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/musicSeekBar">
 
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+            <TextView
+                android:id="@+id/txtStartTime"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <ImageButton
+                android:id="@+id/skipBack"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_baseline_fast_rewind_24" />
+
+            <ImageButton
+                android:id="@+id/play"
+                android:layout_width="70dp"
+                android:layout_height="70dp"
+                android:src="@drawable/ic_baseline_play_circle_outline_24" />
+
+            <ImageButton
+                android:id="@+id/pause"
+                android:layout_width="70dp"
+                android:layout_height="70dp"
+                android:src="@drawable/ic_baseline_pause_circle_outline_24" />
+
+            <ImageButton
+                android:id="@+id/skipNext"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_baseline_fast_forward_24" />
+
+            <TextView
+                android:id="@+id/txtSongTime"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+
+        </LinearLayout>
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>
