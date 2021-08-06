@@ -1,15 +1,105 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+
         <variable
             name="viewModel"
             type="com.musicdemo.ui.weather.WeatherViewModel" />
+
+        <variable
+            name="weather"
+            type="com.musicdemo.model.apientities.Weather" />
     </data>
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:background="@color/black"
+        android:orientation="vertical"
+        android:padding="16dp">
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="monospace"
+            android:text="@{viewModel.location}"
+            android:textColor="@color/white"
+            android:textSize="18sp"
+            tools:layout_editor_absoluteX="185dp"
+            tools:layout_editor_absoluteY="491dp"
+            tools:text="Current Location" />
+
+        <EditText
+            android:id="@+id/editText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:hint="Write here"
+            android:text="@={viewModel.location}"
+            android:textColor="@color/white"
+            android:textColorHint="@color/white" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+
+            android:layout_marginTop="8dp">
+
+            <ImageView
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                app:url="@{viewModel.weather.current.condition.icon}" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginStart="16dp"
+                android:text="@{viewModel.weather.current.condition.text}"
+                android:textColor="@color/white"
+                tools:text="Condition" />
+
+
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="@{viewModel.weather.location.region}"
+            android:textColor="@color/white"
+            tools:text="Region" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+
+            android:layout_marginTop="8dp"
+            android:text="@{viewModel.weather.location.country}"
+            android:textColor="@color/white"
+            tools:text="Country" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+
+            android:layout_marginTop="8dp"
+            android:text="@{`Temperature: `+viewModel.weather.current.tempC +` ` }"
+            android:textColor="@color/white"
+            tools:text="Temperature" />
+
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="@{`Humidity : `+ viewModel.weather.current.humidity }"
+            android:textColor="@color/white"
+            tools:text="Humidity" />
+
+
+    </LinearLayout>
 </layout>

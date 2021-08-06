@@ -15,8 +15,10 @@ import android.widget.ArrayAdapter
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.databinding.DataBindingUtil
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.musicdemo.Music
+import com.musicdemo.R
 import com.musicdemo.databinding.ActivityContactBinding
 
 
@@ -35,6 +37,8 @@ class ContactActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
          binding= ActivityContactBinding.inflate(layoutInflater)
+
+
         setContentView(binding?.root)
         fetchContact()
         setUpList()
