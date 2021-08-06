@@ -8,8 +8,6 @@ import android.os.Handler
 import android.os.IBinder
 import android.util.Log
 import android.view.View
-import android.widget.SeekBar
-import android.widget.SeekBar.OnSeekBarChangeListener
 import androidx.appcompat.app.AppCompatActivity
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.musicdemo.*
@@ -17,12 +15,12 @@ import com.musicdemo.databinding.ActivityMainBinding
 import com.musicdemo.services.MusicPlayerService
 import com.musicdemo.ui.weather.WeatherActivity
 
+
 class MusicActivity : AppCompatActivity(), View.OnClickListener {
 
     private var binding: ActivityMainBinding? = null
     val audioLink = "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3"
 
-  //  private var musicPlaying: Boolean = false
     private lateinit var serviceIntent: Intent
     private lateinit var mService: MusicPlayerService
     private var mBound: Boolean = false
@@ -60,7 +58,8 @@ class MusicActivity : AppCompatActivity(), View.OnClickListener {
 
         LocalBroadcastManager.getInstance(this)
             .registerReceiver(broadcastReceiver, IntentFilter(Music.MUSIC.name))
-
+        LocalBroadcastManager.getInstance(this).registerReceiver(contactReceiver,
+             IntentFilter(Music.ContactNumber.name))
         addOnClick()
 
     }
@@ -173,7 +172,9 @@ class MusicActivity : AppCompatActivity(), View.OnClickListener {
     override fun onStop() {
         super.onStop()
         //TODO add condition - launch notification only in case music is playing
-        //addNotification()
+        if (mService.isServiceStarted) {
+            addNotification()
+        }
         unbindService(connection)
         mBound = false
     }
@@ -181,7 +182,7 @@ class MusicActivity : AppCompatActivity(), View.OnClickListener {
 
     override fun onDestroy() {
         LocalBroadcastManager.getInstance(this).unregisterReceiver(broadcastReceiver)
-
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(contactReceiver)
         super.onDestroy()
     }
 
@@ -237,5 +238,11 @@ class MusicActivity : AppCompatActivity(), View.OnClickListener {
         startActivity(intent)
     }
 
-
+    private val contactReceiver: BroadcastReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context?, intent: Intent) {
+            // Get extra data included in the Intent
+            val contactName = intent.getStringExtra("Name")
+            Log.e("Name", "Got message: $contactName")
+        }
+    }
 }

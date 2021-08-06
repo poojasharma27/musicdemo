@@ -18,12 +18,15 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.MusicDemo"
         android:usesCleartextTraffic="true">
-        <activity android:name=".ui.ContactActivity"></activity>
+        <activity android:name=".ui.ContactActivity"
+            android:exported="true"/>
 
         <receiver android:name=".broadcasts.PauseActionBroadcastReceiver" />
         <receiver android:name=".broadcasts.PlayActionBroadcastReceiver" />
 
-        <activity android:name=".ui.SplashActivity">
+        <activity android:name=".ui.SplashActivity"
+            android:exported="true"
+            >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
