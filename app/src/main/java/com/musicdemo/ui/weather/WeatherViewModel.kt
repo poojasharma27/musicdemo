@@ -1,6 +1,8 @@
 package com.musicdemo.ui.weather
 
+import androidx.databinding.ObservableArrayList
 import androidx.databinding.ObservableField
+import androidx.databinding.ObservableList
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.musicdemo.model.apientities.Weather
@@ -14,8 +16,9 @@ import javax.inject.Inject
 class WeatherViewModel @Inject constructor(var repository: WeatherRepository) : ViewModel() {
 
     private val TAG: String = "WeatherViewModel"
-    var location = ObservableField("Noida")
+    var location = ObservableField("")
     var weather = ObservableField<Weather>()
+    var weatherObservableList = ObservableArrayList<Weather>()
 
     var progressVisibility = ObservableField(false)
 
@@ -36,15 +39,24 @@ class WeatherViewModel @Inject constructor(var repository: WeatherRepository) : 
             }.catch { e ->
                 progressVisibility.set(false)
                 _apiState.value = ApiState.Failure(e)
-            }.collect {
+            }.collect { weather->
                 progressVisibility.set(false)
-                weather.set(it)
-                _apiState.value = ApiState.Success(it)
+
+
+                var notThere = true
+
+                for(item in weatherObservableList){
+                    if(weather.location.lat == item.location.lat &&  weather.location.lon == item.location.lon){
+                        notThere = false
+                    }
+                }
+                if(notThere){
+                    weatherObservableList.add(0, weather)
+                }
+
+                _apiState.value = ApiState.Success(weather)
             }
         }
     }
 
-    fun updateLocation() {
-        //location.set("Gurgaon")
-    }
 }

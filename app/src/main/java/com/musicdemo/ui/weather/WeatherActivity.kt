@@ -2,8 +2,6 @@ package com.musicdemo.ui.weather
 
 import android.os.Bundle
 import android.os.Handler
-import android.util.Log
-import android.view.View
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.widget.addTextChangedListener
@@ -18,12 +16,14 @@ import kotlinx.coroutines.launch
 @AndroidEntryPoint
 class WeatherActivity : AppCompatActivity() {
 
-    private val TAG: String? = "WeatherActivity"
+    private val TAG: String = "WeatherActivity"
     val viewModel: WeatherViewModel by viewModels()
 
     private var _binding: ActivityWeatherBinding? = null
     private val binding
         get() = _binding!!
+
+    lateinit var handler : Handler
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -31,11 +31,9 @@ class WeatherActivity : AppCompatActivity() {
         _binding = ActivityWeatherBinding.inflate(layoutInflater)
         binding.viewModel = viewModel
 
-        setContentView(binding.root)
+        handler = Handler(mainLooper)
 
-        Handler(mainLooper).postDelayed({
-            viewModel.updateLocation()
-        }, 2000)
+        setContentView(binding.root)
 
         addEditTextWatcher()
     }
@@ -44,13 +42,20 @@ class WeatherActivity : AppCompatActivity() {
         super.onResume()
 
         //get weather data
-        viewModel.getWeatherByLocation()
+        //viewModel.getWeatherByLocation()
 
     }
 
     private fun addEditTextWatcher() {
         binding.editText.addTextChangedListener {
-            viewModel.getWeatherByLocation()
+            if(it.toString().isEmpty()){
+                return@addTextChangedListener
+            }
+            handler.removeCallbacksAndMessages(null)
+            handler.postDelayed({
+                viewModel.getWeatherByLocation()
+            },500)
+
         }
     }
 
