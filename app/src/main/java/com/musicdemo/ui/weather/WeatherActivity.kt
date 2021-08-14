@@ -2,11 +2,14 @@ package com.musicdemo.ui.weather
 
 import android.os.Bundle
 import android.os.Handler
+import android.util.Log
+import android.view.View
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.widget.addTextChangedListener
 import androidx.lifecycle.lifecycleScope
 import com.musicdemo.databinding.ActivityWeatherBinding
+import com.musicdemo.listeners.OnRecyclerViewItemClickListener
 import com.musicdemo.network.ApiState
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Job
@@ -14,7 +17,7 @@ import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
-class WeatherActivity : AppCompatActivity() {
+class WeatherActivity : AppCompatActivity(), OnRecyclerViewItemClickListener {
 
     private val TAG: String = "WeatherActivity"
     val viewModel: WeatherViewModel by viewModels()
@@ -36,13 +39,17 @@ class WeatherActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         addEditTextWatcher()
+
+        //TODO remove handler and change implementation
+        Handler(mainLooper).postDelayed({
+            (binding.weatherRecyclerView.adapter as? WeatherAdapter)?.setItemClickListener(this)
+        }, 1000)
+
     }
 
     override fun onResume() {
         super.onResume()
 
-        //get weather data
-        //viewModel.getWeatherByLocation()
 
     }
 
@@ -103,6 +110,10 @@ class WeatherActivity : AppCompatActivity() {
         super.onDestroy()
         _binding = null
 
+    }
+
+    override fun onItemClick(view: View, position: Int) {
+        Log.d(TAG, "onItemClick:  ${viewModel.weatherObservableList[position]}")
     }
 
 

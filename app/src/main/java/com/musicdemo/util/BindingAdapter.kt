@@ -10,19 +10,19 @@ import com.musicdemo.ui.weather.WeatherAdapter
 
 
 @BindingAdapter("url")
-fun urlToImage(view: ImageView, url: String?){
+fun urlToImage(view: ImageView, url: String?) {
     url?.apply {
-            Glide.with(view).load("http:$url").centerCrop().into(view)
+        Glide.with(view).load("http:$url").centerCrop().into(view)
     }
 }
 
 @BindingAdapter("weatherList")
-fun weatherList(view: RecyclerView, list : ObservableArrayList<Weather>){
+fun weatherList(view: RecyclerView, list: ObservableArrayList<Weather>) {
 
-   view.adapter?.apply {
-       notifyDataSetChanged()
-   }?: run {
-       view.adapter = WeatherAdapter(list)
-   }
+    view.adapter?.apply {
+        notifyDataSetChanged()
+    } ?: run {
+        view.adapter = WeatherAdapter(list)
+    }
 
 }

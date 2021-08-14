@@ -2,15 +2,22 @@ package com.musicdemo.ui.weather
 
 import android.util.Log
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.musicdemo.databinding.ItemLocationBinding
+import com.musicdemo.listeners.OnRecyclerViewItemClickListener
 import com.musicdemo.model.apientities.Weather
 
 
 class WeatherAdapter(private val dataSet: MutableList<Weather>) :
     RecyclerView.Adapter<WeatherAdapter.ViewHolder>() {
 
+    lateinit var listener: OnRecyclerViewItemClickListener
+
+    fun setItemClickListener(listener: OnRecyclerViewItemClickListener){
+       this.listener = listener
+    }
 
      val TAG: String = "WeatherAdapter"
 
@@ -38,6 +45,10 @@ class WeatherAdapter(private val dataSet: MutableList<Weather>) :
     override fun onBindViewHolder(viewHolder: ViewHolder, position: Int) {
         Log.d(TAG, "onBindViewHolder: ")
         viewHolder.view.weather = dataSet[position]
+
+        viewHolder.itemView.setOnClickListener {
+            listener.onItemClick(it, viewHolder.adapterPosition)
+        }
     }
 
     // Return the size of your dataset (invoked by the layout manager)
