@@ -46,7 +46,7 @@ class WeatherViewModel @Inject constructor(var repository: WeatherRepository) : 
                 var notThere = true
 
                 for(item in weatherObservableList){
-                    if(weather.location.lat == item.location.lat &&  weather.location.lon == item.location.lon){
+                    if(weather.location?.lat == item.location?.lat &&  weather.location?.lon == item.location?.lon){
                         notThere = false
                     }
                 }

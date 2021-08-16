@@ -40,6 +40,7 @@
             </intent-filter>
 
         </activity>
+        <activity android:name=".ui.weather.details.WeatherDetailsActivity" />
 
         <service
             android:name=".services.MusicPlayerService"

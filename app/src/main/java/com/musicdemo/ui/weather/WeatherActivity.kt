@@ -1,5 +1,6 @@
 package com.musicdemo.ui.weather
 
+import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.util.Log
@@ -10,7 +11,10 @@ import androidx.core.widget.addTextChangedListener
 import androidx.lifecycle.lifecycleScope
 import com.musicdemo.databinding.ActivityWeatherBinding
 import com.musicdemo.listeners.OnRecyclerViewItemClickListener
+import com.musicdemo.model.apientities.Weather
 import com.musicdemo.network.ApiState
+import com.musicdemo.ui.weather.details.WeatherDetailsActivity
+import com.musicdemo.util.weatherItemClickedTrigger
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.collect
@@ -26,7 +30,7 @@ class WeatherActivity : AppCompatActivity(), OnRecyclerViewItemClickListener {
     private val binding
         get() = _binding!!
 
-    lateinit var handler : Handler
+    lateinit var handler: Handler
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -40,11 +44,21 @@ class WeatherActivity : AppCompatActivity(), OnRecyclerViewItemClickListener {
 
         addEditTextWatcher()
 
-        //TODO remove handler and change implementation
-        Handler(mainLooper).postDelayed({
-            (binding.weatherRecyclerView.adapter as? WeatherAdapter)?.setItemClickListener(this)
-        }, 1000)
 
+        lifecycleScope.launch {
+            weatherItemClickedTrigger.collect {
+                if (it != -1) {
+                    gotToDetail(viewModel.weatherObservableList[it])
+                }
+            }
+        }
+
+    }
+
+    private fun gotToDetail(weather: Weather?) {
+        val intent = Intent(this@WeatherActivity, WeatherDetailsActivity::class.java)
+        intent.putExtra("data", weather)
+        startActivity(intent)
     }
 
     override fun onResume() {
@@ -55,21 +69,21 @@ class WeatherActivity : AppCompatActivity(), OnRecyclerViewItemClickListener {
 
     private fun addEditTextWatcher() {
         binding.editText.addTextChangedListener {
-            if(it.toString().isEmpty()){
+            if (it.toString().isEmpty()) {
                 return@addTextChangedListener
             }
             handler.removeCallbacksAndMessages(null)
             handler.postDelayed({
                 viewModel.getWeatherByLocation()
-            },500)
+            }, 500)
 
         }
     }
 
-    lateinit var weatherJob : Job
+    lateinit var weatherJob: Job
 
-    fun updateUi(state: ApiState){
-        when(state){
+    fun updateUi(state: ApiState) {
+        when (state) {
             ApiState.Empty -> {
 
             }
@@ -91,7 +105,7 @@ class WeatherActivity : AppCompatActivity(), OnRecyclerViewItemClickListener {
     }
 
     private fun startWeatherJob() {
-        weatherJob =  lifecycleScope.launch {
+        weatherJob = lifecycleScope.launch {
             viewModel.apiState.collect {
                 updateUi(it)
             }
