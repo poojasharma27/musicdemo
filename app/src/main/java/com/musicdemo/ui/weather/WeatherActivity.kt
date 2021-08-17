@@ -44,7 +44,6 @@ class WeatherActivity : AppCompatActivity(), OnRecyclerViewItemClickListener {
 
         addEditTextWatcher()
 
-
         lifecycleScope.launch {
             weatherItemClickedTrigger.collect {
                 if (it != -1) {
@@ -53,7 +52,9 @@ class WeatherActivity : AppCompatActivity(), OnRecyclerViewItemClickListener {
             }
         }
 
+
     }
+
 
     private fun gotToDetail(weather: Weather?) {
         val intent = Intent(this@WeatherActivity, WeatherDetailsActivity::class.java)
